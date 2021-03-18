@@ -1,0 +1,6 @@
+@media screen and (max-width: 768px) {
+  .popup__close-icon_position_corner {
+    top: -32px;
+    right: -32px;
+  }
+}

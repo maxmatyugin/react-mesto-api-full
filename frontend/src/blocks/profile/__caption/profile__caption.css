@@ -1,0 +1,23 @@
+.profile__caption {
+  font-family: Inter, 'Arial', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 21.78px;
+  margin: 0;
+  padding: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 1055px) {
+  .profile__caption {}
+}
+
+@media screen and (max-width: 768px) {
+  .profile__caption {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+}

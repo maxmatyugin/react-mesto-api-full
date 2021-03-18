@@ -1,0 +1,35 @@
+@import url(./__container/popup__container.css);
+@import url(./__header/popup__header.css);
+@import url(./__header/_place_bottom/popup__header_place_bottom.css);
+@import url(./__header/_narrow/popup__header_narrow.css);
+@import url(./__close-icon/popup__close-icon.css);
+@import url(./__input-text/popup__input-text.css);
+@import url(./__input-text/_small/popup__input-text_small.css);
+@import url(./__button/popup__button.css);
+@import url(./__button/_narrow/popup__button_narrow.css);
+@import url(./__figure/popup__figure.css);
+@import url(./__image/popup__image.css);
+@import url(./__caption/popup__caption.css);
+@import url(./__close-icon/_position/popup__close-icon_position_corner.css);
+@import url(./__close-icon/_position/popup__close-icon_position_center.css);
+@import url(./__error/popup__error.css);
+@import url(./__input-text/_invalid/popup__input-text_invalid.css);
+@import url(./__button/_invalid/popup__button_invalid.css);
+@import url(./__picture/popup__picture.css);
+@import url(./__container/_type/popup__container_type_infotooltip.css);
+.popup {
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, visibility;
+  transition-duration: .3s, 0s;
+  transition-delay: 0s, .3s;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .5);
+  justify-content: center;
+  align-items: center;
+}

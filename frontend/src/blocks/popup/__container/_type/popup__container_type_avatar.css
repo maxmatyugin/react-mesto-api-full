@@ -1,0 +1,6 @@
+@media screen and (max-width: 768px) {
+  .popup__container_type_avatar {
+    padding: 25px 22px;
+    min-width: 238px;
+  }
+}

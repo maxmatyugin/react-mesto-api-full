@@ -1,0 +1,6 @@
+@media screen and (max-width: 768px) {
+  .popup__input-text_small {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

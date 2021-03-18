@@ -1,0 +1,17 @@
+.popup__container_type_infotooltip{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 36px 60px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .popup__container_type_infotooltip {
+    padding: 10px 18px 50px;
+    min-width: 184px;
+    max-width: 274px;
+  }
+}

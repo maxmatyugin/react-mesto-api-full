@@ -1,0 +1,33 @@
+.auth-form__input {
+  min-width: 358px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #FFFFFF;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #CCCCCC;
+  padding-bottom: 13px;
+  margin-top: 30px;
+}
+
+.auth-form__input::placeholder {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #CCCCCC;
+}
+
+.auth-form__input:focus {
+  outline: none;
+}
+
+@media screen and (max-width: 768px) {
+  .auth-form__input {
+    min-width: 260px;
+  }
+}
