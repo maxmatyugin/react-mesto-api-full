@@ -72,9 +72,9 @@ export class Api {
 }
 
 export const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-18/",
+  baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
   headers: {
-    authorization: "bdefafd7-6c0d-43a5-8c84-faac50a6afd4",
+    "Authorization": `Bearer ${localStorage.getItem('token')}`,
     "Content-Type": "application/json",
   },
 });
