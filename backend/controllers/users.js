@@ -49,6 +49,7 @@ module.exports.createUser = (req, res) => {
 
       res.status(500).send({ message: 'Не удалось зарегистрировать пользователя' });
     });
+
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -86,20 +87,20 @@ module.exports.login = (req, res) => {
   }
 
   User.findOne({ email })
-    .then(user => {
+    .select('+password')
+    .then((user) => {
       if (!user) {
         return res.status(401).send({ message: 'Неверный емейл или пароль' });
       }
-      return {
-        user,
-        isPasswordEqual: bcrypt.compare(password, user.password),
-      };
+      return bcrypt.compare(password, user.password)
+        .then((isPasswordEqual) => {
+          if (!isPasswordEqual) {
+            return res.status(401).send({ message: 'Неверный емейл или пароль' });
+          }
+          return user;
+        });
     })
-    // eslint-disable-next-line consistent-return
-    .then(({ user, isPasswordEqual }) => {
-      if (!isPasswordEqual) {
-        return res.status(401).send({ message: 'Неверный емейл или пароль' });
-      }
+    .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
 
       res.send({ token });
