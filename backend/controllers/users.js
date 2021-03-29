@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
@@ -23,17 +25,29 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
+// eslint-disable-next-line consistent-return
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Не передан емейл или пароль' });
+  }
 
-  User.create({ name, about, avatar })
-    .then((user) => res.send({ message: `Пользователь ${user.name} создан` }))
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then(() => {
+      res.status(200).send({ message: 'Пользователь создан' });
+    })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Данные введены некорректно' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      if (err.code === 11000) {
+        res.status(409).send({ message: 'Такой пользователь уже существует' });
       }
+
+      res.status(500).send({ message: 'Не удалось зарегистрировать пользователя' });
     });
 };
 
@@ -59,6 +73,53 @@ module.exports.updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Данные введены некорректно' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Не передан емейл или пароль' });
+  }
+
+  User.findOne({ email })
+    .then(user => {
+      if (!user) {
+        return res.status(401).send({ message: 'Неверный емейл или пароль' });
+      }
+      return {
+        user,
+        isPasswordEqual: bcrypt.compare(password, user.password),
+      };
+    })
+    // eslint-disable-next-line consistent-return
+    .then(({ user, isPasswordEqual }) => {
+      if (!isPasswordEqual) {
+        return res.status(401).send({ message: 'Неверный емейл или пароль' });
+      }
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
+module.exports.getProfile = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user === null) {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send({ messege: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
