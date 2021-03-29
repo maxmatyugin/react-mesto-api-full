@@ -1,4 +1,4 @@
-export const BASE_URL = "https://auth.nomoreparties.co";
+export const BASE_URL = "https://api.front.maxmatyugin.nomoredomains.club/";
 
 const handleRes = (res) =>
   res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
