@@ -1,4 +1,4 @@
-export const BASE_URL = "https://api.front.maxmatyugin.nomoredomains.club/";
+export const BASE_URL = "https://api.front.maxmatyugin.nomoredomains.club";
 
 const handleRes = (res) =>
   res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
@@ -11,7 +11,6 @@ export const register = (email, password) => {
       "Content-Type": "application/json",
       
     },
-    credentials: 'include', 
     body: JSON.stringify({ email, password }),
   }).then(handleRes);
 };
@@ -23,7 +22,6 @@ export const login = (email, password) => {
       "Accept": "application/json",
       "Content-Type": "application/json",
     },
-    credentials: 'include', 
     body: JSON.stringify({ email, password }),
   }).then(handleRes);
 };
@@ -36,6 +34,5 @@ export const checkToken = (token) => {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`,
     },
-    credentials: 'include', 
   }).then(handleRes);
 };

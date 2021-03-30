@@ -8,25 +8,7 @@ const routes = require('./routes/index.js');
 
 const app = express();
 
-const options = {
-  origin: [
-    'http://localhost:8080',
-    'http://localhost:3000',
-    'http://localhost:80',
-    'https://api.front.maxmatyugin.nomoredomains.club/',
-    'https://front.maxmatyugin.nomoredomains.club/',
-    'http://api.front.maxmatyugin.nomoredomains.club/',
-    'http://front.maxmatyugin.nomoredomains.club/',
-    'https://maxmatyugin.github.io',
-  ],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-  credentials: true,
-};
-
-app.use('*', cors(options));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
