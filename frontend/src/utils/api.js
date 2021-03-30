@@ -15,6 +15,7 @@ export class Api {
   getInitialCards() {
     return fetch(`${this._baseUrl}cards`, {
       headers: this._headers,
+      credentials: 'include', 
     }).then((res) => this._handleRes(res));
   }
 
@@ -22,6 +23,7 @@ export class Api {
     return fetch(`${this._baseUrl}cards`, {
       method: "POST",
       headers: this._headers,
+      credentials: 'include', 
       body: JSON.stringify({
         name: name,
         link: link,
@@ -33,12 +35,14 @@ export class Api {
     return fetch(`${this._baseUrl}cards/${id}`, {
       method: "DELETE",
       headers: this._headers,
+      credentials: 'include', 
     }).then((res) => this._handleRes(res));
   }
 
   getUserInfo() {
     return fetch(`${this._baseUrl}users/me`, {
       headers: this._headers,
+      credentials: 'include', 
     }).then((res) => this._handleRes(res));
   }
 
@@ -46,6 +50,7 @@ export class Api {
     return fetch(`${this._baseUrl}users/me`, {
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include', 
       body: JSON.stringify({
         name: popupName,
         about: popupCaption,
@@ -57,6 +62,7 @@ export class Api {
     return fetch(`${this._baseUrl}users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include', 
       body: JSON.stringify({
         avatar: avatarInputUrl,
       }),
@@ -67,6 +73,7 @@ export class Api {
     return fetch(`${this._baseUrl}cards/likes/${id}`, {
       method: `${isLiked ? "PUT" : "DELETE"}`,
       headers: this._headers,
+      credentials: 'include', 
     }).then((res) => this._handleRes(res));
   }
 }
@@ -77,4 +84,5 @@ export const api = new Api({
     "Authorization": `Bearer ${localStorage.getItem('token')}`,
     "Content-Type": "application/json",
   },
+  credentials: 'include', 
 });

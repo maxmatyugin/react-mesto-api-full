@@ -42,16 +42,16 @@ function App() {
   const [userEmail, setUserEmail] = React.useState("");
   const history = useHistory();
 
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, initialCards]) => {
-        setCurrentUser(userInfo);
-        setCards(initialCards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      });
-  }, []);
+  // React.useEffect(() => {
+  //   Promise.all([api.getUserInfo(), api.getInitialCards()])
+  //     .then(([userInfo, initialCards]) => {
+  //       setCurrentUser(userInfo);
+  //       setCards(initialCards);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Ошибка: ${err}`);
+  //     });
+  // }, []);
 
   function handleDeleteClick(card) {
     setIsRusurePopupOpen(true);

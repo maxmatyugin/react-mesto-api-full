@@ -49,7 +49,6 @@ module.exports.createUser = (req, res) => {
 
       res.status(500).send({ message: 'Не удалось зарегистрировать пользователя' });
     });
-
 };
 
 module.exports.updateProfile = (req, res) => {
