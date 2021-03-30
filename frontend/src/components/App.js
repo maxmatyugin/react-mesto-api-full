@@ -15,7 +15,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Login from "./Login";
 import Register from "./Register";
 import InfoTooltip from "./InfoTooltip";
-import * as auth from "../utils/auth";
+import { login, register, checkToken } from "../utils/auth";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(
@@ -42,16 +42,16 @@ function App() {
   const [userEmail, setUserEmail] = React.useState("");
   const history = useHistory();
 
-  // React.useEffect(() => {
-  //   Promise.all([api.getUserInfo(), api.getInitialCards()])
-  //     .then(([userInfo, initialCards]) => {
-  //       setCurrentUser(userInfo);
-  //       setCards(initialCards);
-  //     })
-  //     .catch((err) => {
-  //       console.log(`Ошибка: ${err}`);
-  //     });
-  // }, []);
+  React.useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userInfo, initialCards]) => {
+        setCurrentUser(userInfo);
+        setCards(initialCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
 
   function handleDeleteClick(card) {
     setIsRusurePopupOpen(true);
@@ -148,8 +148,7 @@ function App() {
   }
 
   function handleRegister(email, password) {
-    auth
-      .register(email, password)
+      register(email, password)
       .then((res) => {
         setIsInfoTooltipOpen(true);
         setIsSuccess(true);
@@ -162,9 +161,10 @@ function App() {
   }
 
   function handleLogin(email, password) {
-    auth.login(email, password).then((res) => {
-      if (res.token) {
+    login(email, password).then((res) => {
+      if (res) {
         localStorage.setItem("token", res.token);
+        setUserEmail(res.email);
         setLoggedIn(true);
         history.push("/");
       }
@@ -174,11 +174,10 @@ function App() {
     });
   }
 
-  const checkToken = React.useCallback(() => {
+  const handleCheckToken = React.useCallback(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      auth
-        .checkToken(token)
+      checkToken(token)
         .then((res) => {
           if (res) {
             setLoggedIn(true);
@@ -191,8 +190,14 @@ function App() {
   }, [history]);
 
   React.useEffect(() => {
-    checkToken();
-  }, [checkToken, loggedIn]);
+    handleCheckToken();
+  }, [handleCheckToken]);
+
+  React.useEffect(() => {
+    if (loggedIn) {
+        history.push('/')
+    }
+}, [history, loggedIn]);
 
   function handleLogout() {
     localStorage.removeItem("token");

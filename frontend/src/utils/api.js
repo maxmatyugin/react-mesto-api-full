@@ -73,6 +73,7 @@ export class Api {
 
 export const api = new Api({
   baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
+  // baseUrl: "http://localhost:3000/",
   headers: {
     "Authorization": `Bearer ${localStorage.getItem('token')}`,
     "Content-Type": "application/json",
