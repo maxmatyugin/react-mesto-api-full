@@ -8,12 +8,10 @@ const {
 usersRouter.post('/signin', login);
 usersRouter.post('/signup', createUser);
 
-usersRouter.use(auth);
-
-usersRouter.get('/users', getUsers);
-usersRouter.get('/users/:id', getUserById);
-usersRouter.patch('/users/me', updateProfile);
-usersRouter.patch('/users/me/avatar', updateAvatar);
-usersRouter.get('users/me', getProfile);
+usersRouter.get('/users', auth, getUsers);
+usersRouter.get('/users/:id', auth, getUserById);
+usersRouter.patch('/users/me', auth, updateProfile);
+usersRouter.patch('/users/me/avatar', auth, updateAvatar);
+usersRouter.get('users/me', auth, getProfile);
 
 module.exports = usersRouter;

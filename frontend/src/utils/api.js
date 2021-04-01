@@ -14,6 +14,7 @@ export class Api {
 
   getInitialCards() {
     return fetch(`${this._baseUrl}cards`, {
+      method: "GET",
       headers: this._headers,
     }).then((res) => this._handleRes(res));
   }
@@ -38,6 +39,7 @@ export class Api {
 
   getUserInfo() {
     return fetch(`${this._baseUrl}users/me`, {
+      method: "GET",
       headers: this._headers,
     }).then((res) => this._handleRes(res));
   }
@@ -72,10 +74,10 @@ export class Api {
 }
 
 export const api = new Api({
-  baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
-  // baseUrl: "http://localhost:3000/",
+  // baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
+  baseUrl: "http://localhost:3000/",
   headers: {
-    "Authorization": `Bearer ${localStorage.getItem('token')}`,
     "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
   },
 });

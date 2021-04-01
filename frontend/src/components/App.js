@@ -42,16 +42,16 @@ function App() {
   const [userEmail, setUserEmail] = React.useState("");
   const history = useHistory();
 
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, initialCards]) => {
-        setCurrentUser(userInfo);
-        setCards(initialCards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      });
-  }, []);
+  // React.useEffect(() => {
+  //   Promise.all([api.getUserInfo(), api.getInitialCards()])
+  //     .then(([userInfo, initialCards]) => {
+  //       setCurrentUser(userInfo);
+  //       setCards(initialCards);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Ошибка: ${err}`);
+  //     });
+  // }, []);
 
   function handleDeleteClick(card) {
     setIsRusurePopupOpen(true);
@@ -163,8 +163,8 @@ function App() {
   function handleLogin(email, password) {
     login(email, password).then((res) => {
       if (res) {
-        localStorage.setItem("token", res.token);
-        setUserEmail(res.email);
+        localStorage.setItem("jwt", res.token);
+        setUserEmail(email);
         setLoggedIn(true);
         history.push("/");
       }
@@ -174,22 +174,27 @@ function App() {
     });
   }
 
-  const handleCheckToken = React.useCallback(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+ 
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function handleCheckToken() {
+    
+    if (localStorage.getItem("jwt")) {
+      const token = localStorage.getItem("jwt");
       checkToken(token)
         .then((res) => {
-          if (res) {
+          
             setLoggedIn(true);
-            setUserEmail(res.data.email);
+            setUserEmail(res.email);
             history.push("/");
-          }
+          
         })
-        .catch(() => history.push("/sign-in"));
+        .catch((err) => console.log(`Ошибка токена ${err}`));
     }
-  }, [history]);
+  };
 
   React.useEffect(() => {
+    console.log(localStorage.getItem('jwt'))
     handleCheckToken();
   }, [handleCheckToken]);
 
@@ -200,7 +205,7 @@ function App() {
 }, [history, loggedIn]);
 
   function handleLogout() {
-    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
     setLoggedIn(false);
   }
 

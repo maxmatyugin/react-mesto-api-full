@@ -4,16 +4,10 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found');
 const BadRequest = require('../errors/bad-request');
 const ConflictError = require('../errors/conflict');
-const Unauthorized = require('../errors/unauthorized');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => {
-      if (!users) {
-        throw new NotFoundError('Пользователи не найдены');
-      }
-      res.send(users);
-    })
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -43,16 +37,15 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
-      res.status(200).send({
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      res.status(200).send({ message: `Пользователь ${user.name} создан` });
     })
     .catch((err) => {
+      console.log(err);
       if (err.code === 11000) {
         throw new ConflictError('Такой пользователь уже существует');
+      }
+      if (err) {
+        throw new BadRequest('Введены невалидные данные');
       }
     })
     .catch(next);
@@ -94,31 +87,36 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new Unauthorized('Неверный емейл или пароль');
+        throw new BadRequest('Неверный емейл или пароль');
       }
       return bcrypt.compare(password, user.password)
         .then((isPasswordEqual) => {
           if (!isPasswordEqual) {
-            throw new Unauthorized('Неверный емейл или пароль');
+            throw new BadRequest('Неверный емейл или пароль');
           }
           return user;
         });
     })
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'somesecret', { expiresIn: '7d' });
-
       res.send({ token });
     })
     .catch(next);
 };
 
 module.exports.getProfile = (req, res, next) => {
-  User.findById(req.user._id)
+  const id = req.user._id;
+  User.findById(id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
       res.status(200).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'castError') {
+        throw new BadRequest('Пользователь не найден');
+      }
+      next(err);
+    });
 };

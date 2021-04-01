@@ -17,12 +17,13 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => {
-      if (!card) {
-        throw new BadRequest('Невалидные данные');
-      }
-      res.status(200).send({ data: card });
-    })
+    .then((card) => res.status(200).send({ data: card })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          throw new BadRequest('Невалидные данные');
+        }
+        next(err);
+      }))
     .catch(next);
 };
 
@@ -30,9 +31,15 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new BadRequest('Не удалось удалить карточку');
+        throw new NotFoundError('Карточка с таким id не найдена');
       }
       res.status(200).send({ message: 'Карточка удалена' });
+    })
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        throw new BadRequest('Не удалось удалить карточку');
+      }
+      next(error);
     })
     .catch(next);
 };

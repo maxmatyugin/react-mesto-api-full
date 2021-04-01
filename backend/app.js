@@ -7,6 +7,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const routes = require('./routes/index.js');
+const NotFoundError = require('./errors/not-found');
 
 const app = express();
 
@@ -32,8 +33,8 @@ app.get('/crash-test', () => {
 
 app.use(routes);
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use('*', () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден');
 });
 
 app.use(errorLogger);
