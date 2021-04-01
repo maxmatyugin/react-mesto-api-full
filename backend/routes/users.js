@@ -9,9 +9,9 @@ usersRouter.post('/signin', login);
 usersRouter.post('/signup', createUser);
 
 usersRouter.get('/users', auth, getUsers);
+usersRouter.get('/users/me', auth, getProfile);
 usersRouter.get('/users/:id', auth, getUserById);
 usersRouter.patch('/users/me', auth, updateProfile);
 usersRouter.patch('/users/me/avatar', auth, updateAvatar);
-usersRouter.get('users/me', auth, getProfile);
 
 module.exports = usersRouter;

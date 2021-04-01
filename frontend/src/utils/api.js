@@ -66,7 +66,7 @@ export class Api {
   }
 
   changeLikeCardStatus(id, isLiked) {
-    return fetch(`${this._baseUrl}cards/likes/${id}`, {
+    return fetch(`${this._baseUrl}cards/${id}/likes/`, {
       method: `${isLiked ? "PUT" : "DELETE"}`,
       headers: this._headers,
     }).then((res) => this._handleRes(res));
@@ -74,8 +74,8 @@ export class Api {
 }
 
 export const api = new Api({
-  baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
-  // baseUrl: "http://localhost:3000/",
+  // baseUrl: "https://api.front.maxmatyugin.nomoredomains.club/",
+  baseUrl: "http://localhost:3000/",
   // f8348ccfa18f2cbb3b539a7bcb17b40909b3a2acc90aa886c64c6f5074eda45c
   headers: {
     "Content-Type": "application/json",

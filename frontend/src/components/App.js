@@ -42,16 +42,17 @@ function App() {
   const [userEmail, setUserEmail] = React.useState("");
   const history = useHistory();
 
-  // React.useEffect(() => {
-  //   Promise.all([api.getUserInfo(), api.getInitialCards()])
-  //     .then(([userInfo, initialCards]) => {
-  //       setCurrentUser(userInfo);
-  //       setCards(initialCards);
-  //     })
-  //     .catch((err) => {
-  //       console.log(`Ошибка: ${err}`);
-  //     });
-  // }, []);
+  React.useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userInfo, initialCards]) => {
+        setCurrentUser(userInfo);
+        setCards(initialCards);
+        console.log(initialCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
 
   function handleDeleteClick(card) {
     setIsRusurePopupOpen(true);
@@ -122,7 +123,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
@@ -164,7 +165,7 @@ function App() {
     login(email, password).then((res) => {
       if (res) {
         localStorage.setItem("jwt", res.token);
-        setUserEmail(email);
+        setUserEmail(res.email);
         setLoggedIn(true);
         history.push("/");
       }
@@ -176,8 +177,8 @@ function App() {
 
  
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function handleCheckToken() {
+  
+  const handleCheckToken = React.useCallback(() => {
     
     if (localStorage.getItem("jwt")) {
       const token = localStorage.getItem("jwt");
@@ -191,10 +192,9 @@ function App() {
         })
         .catch((err) => console.log(`Ошибка токена ${err}`));
     }
-  };
+  }, [history]);
 
   React.useEffect(() => {
-    console.log(localStorage.getItem('jwt'))
     handleCheckToken();
   }, [handleCheckToken]);
 
