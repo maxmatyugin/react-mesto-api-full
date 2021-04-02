@@ -47,7 +47,6 @@ function App() {
       .then(([userInfo, initialCards]) => {
         setCurrentUser(userInfo);
         setCards(initialCards);
-        console.log(initialCards);
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -200,6 +199,12 @@ function App() {
 
   React.useEffect(() => {
     if (loggedIn) {
+      api.getUserInfo()
+      .then(res => setCurrentUser(res))
+      .catch(err => console.log(err));
+      api.getInitialCards()
+      .then(res => setCards(res))
+      .catch(err => console.log(err));
         history.push('/')
     }
 }, [history, loggedIn]);

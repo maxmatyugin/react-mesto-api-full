@@ -15,7 +15,10 @@ export class Api {
   getInitialCards() {
     return fetch(`${this._baseUrl}cards`, {
       method: "GET",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
+      },
     }).then((res) => this._handleRes(res));
   }
 
@@ -40,7 +43,10 @@ export class Api {
   getUserInfo() {
     return fetch(`${this._baseUrl}users/me`, {
       method: "GET",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
+      },
     }).then((res) => this._handleRes(res));
   }
 
