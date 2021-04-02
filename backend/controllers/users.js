@@ -20,6 +20,12 @@ module.exports.getUserById = (req, res, next) => {
       }
       res.status(200).send(user);
     })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Пользователь с таким id не найден');
+      }
+      next(err);
+    })
     .catch(next);
 };
 
@@ -54,26 +60,50 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
+  if (!name || !about) {
+    throw new BadRequest('Не переданы данные');
+  }
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        throw new BadRequest('Данные введены некорректно');
+        throw new NotFoundError('Нет пользователя с таким id');
       }
-      res.send({ message: `Пользователь ${user.name} обновлён` });
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      if (err.name === 'ValidationError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      next(err);
     })
     .catch(next);
 };
 
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
+  if (!avatar) {
+    throw new BadRequest('Не переданы данные');
+  }
 
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((data) => {
       if (!data) {
         throw new BadRequest('Данные введены некорректно');
       }
-      res.send({ message: 'Аватар обновлён' });
+      res.send(data);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      if (err.name === 'ValidationError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      next(err);
     })
     .catch(next);
 };

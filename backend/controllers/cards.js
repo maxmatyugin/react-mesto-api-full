@@ -17,13 +17,16 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(200).send(card)
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          throw new BadRequest('Невалидные данные');
-        }
-        next(err);
-      }))
+    .then((card) => res.status(200).send(card))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      if (err.name === 'ValidationError') {
+        throw new BadRequest('Введены некорректные данные');
+      }
+      next(err);
+    })
     .catch(next);
 };
 
@@ -52,9 +55,15 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new BadRequest('Невалидный id карточки');
+        throw new NotFoundError('Карточка не найдена');
       }
-      res.status(200).send({ message: 'Вам понравилось!' });
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Карточка с таким id не найдена');
+      }
+      next(err);
     })
     .catch(next);
 };
@@ -67,9 +76,15 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new BadRequest('Невалидный id карточки');
+        throw new NotFoundError('Карточка не найдена');
       }
-      res.status(200).send({ message: 'Больше не нравится' });
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Карточка с таким id не найдена');
+      }
+      next(err);
     })
     .catch(next);
 };

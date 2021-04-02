@@ -1,5 +1,5 @@
-// export const BASE_URL = "https://api.front.maxmatyugin.nomoredomains.club";
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "https://api.front.maxmatyugin.nomoredomains.club";
+// export const BASE_URL = "http://localhost:3000";
 
 const handleRes = (res) =>
   res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
