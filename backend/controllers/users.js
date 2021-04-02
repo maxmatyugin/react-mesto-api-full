@@ -8,7 +8,7 @@ const ConflictError = require('../errors/conflict');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send(users))
+    .then((users) => res.status(200).send(users))
     .catch(next);
 };
 
@@ -44,7 +44,7 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
-      res.status(200).send({ message: `Пользователь ${user.name} создан` });
+      res.status(200).send(user);
     })
     .catch((err) => {
       console.log(err);

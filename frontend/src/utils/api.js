@@ -53,7 +53,10 @@ export class Api {
   setUserInfo(popupName, popupCaption) {
     return fetch(`${this._baseUrl}users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
+      },
       body: JSON.stringify({
         name: popupName,
         about: popupCaption,

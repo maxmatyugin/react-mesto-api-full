@@ -11,11 +11,11 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import RusurePopup from "./RusurePopup";
 import { api } from "../utils/api.js";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Login from "./Login";
 import Register from "./Register";
 import InfoTooltip from "./InfoTooltip";
 import { login, register, checkToken } from "../utils/auth";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(
@@ -43,6 +43,13 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
+    if (loggedIn) {
+        history.push('/')
+    }
+}, [history, loggedIn]);
+
+  React.useEffect(() => {
+    if (loggedIn) {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userInfo, initialCards]) => {
         setCurrentUser(userInfo);
@@ -51,7 +58,26 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
       });
-  }, []);
+    }
+  }, [loggedIn]);
+
+  
+    React.useEffect(() => {
+      const token = localStorage.getItem("jwt");
+      if (token) {
+        
+          checkToken(token)
+          .then((res) => {
+            if(res) {
+              setUserEmail(res.email);
+              setLoggedIn(true);
+              history.push("/");
+            }
+          })
+         .catch ((err) => console.log(`Ошибка токена ${err}`)); 
+      }
+    });
+
 
   function handleDeleteClick(card) {
     setIsRusurePopupOpen(true);
@@ -164,8 +190,8 @@ function App() {
     login(email, password).then((res) => {
       if (res) {
         localStorage.setItem("jwt", res.token);
-        setUserEmail(res.email);
         setLoggedIn(true);
+        setUserEmail(res.email);
         history.push("/");
       }
     })
@@ -173,41 +199,9 @@ function App() {
       console.log(`Ошибка: ${err}`);
     });
   }
-
- 
-
   
-  const handleCheckToken = React.useCallback(() => {
-    
-    if (localStorage.getItem("jwt")) {
-      const token = localStorage.getItem("jwt");
-      checkToken(token)
-        .then((res) => {
-          
-            setLoggedIn(true);
-            setUserEmail(res.email);
-            history.push("/");
-          
-        })
-        .catch((err) => console.log(`Ошибка токена ${err}`));
-    }
-  }, [history]);
 
-  React.useEffect(() => {
-    handleCheckToken();
-  }, [handleCheckToken]);
 
-  React.useEffect(() => {
-    if (loggedIn) {
-      api.getUserInfo()
-      .then(res => setCurrentUser(res))
-      .catch(err => console.log(err));
-      api.getInitialCards()
-      .then(res => setCards(res))
-      .catch(err => console.log(err));
-        history.push('/')
-    }
-}, [history, loggedIn]);
 
   function handleLogout() {
     localStorage.removeItem("jwt");
