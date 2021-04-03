@@ -12,12 +12,12 @@ export class Api {
     }
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return fetch(`${this._baseUrl}cards`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
+        "Authorization": `Bearer ${token}`,
       },
     }).then((res) => this._handleRes(res));
   }
@@ -40,12 +40,12 @@ export class Api {
     }).then((res) => this._handleRes(res));
   }
 
-  getUserInfo() {
+  getUserInfo(token) {
     return fetch(`${this._baseUrl}users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem('jwt')}`,
+        "Authorization": `Bearer ${token}`,
       },
     }).then((res) => this._handleRes(res));
   }

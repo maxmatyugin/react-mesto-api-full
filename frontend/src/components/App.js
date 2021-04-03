@@ -42,18 +42,38 @@ function App() {
   const [userEmail, setUserEmail] = React.useState("");
   const history = useHistory();
 
+ 
+
   React.useEffect(() => {
-    if (loggedIn) {
-        history.push('/')
+    const token = localStorage.getItem("jwt");
+    if (token) {
+        checkToken(token)
+        .then((res) => {
+          if(res) {
+            setLoggedIn(true);
+            setUserEmail(res.email);
+            history.push("/");
+          }
+        })
+       .catch ((err) => console.log(`Ошибка токена ${err}`)); 
     }
-}, [history, loggedIn]);
+  
+  }, [loggedIn]);
+
+  // React.useEffect(() => {
+  //   if (loggedIn) {
+  //     history.push('/');
+  //   }
+  // }, [loggedIn, history])
+
 
   React.useEffect(() => {
     if (loggedIn) {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      const token = localStorage.getItem("jwt");
+    Promise.all([api.getUserInfo(token), api.getInitialCards(token)])
       .then(([userInfo, initialCards]) => {
+        setCards(initialCards.reverse());
         setCurrentUser(userInfo);
-        setCards(initialCards);
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -62,21 +82,6 @@ function App() {
   }, [loggedIn]);
 
   
-    React.useEffect(() => {
-      const token = localStorage.getItem("jwt");
-      if (token) {
-        
-          checkToken(token)
-          .then((res) => {
-            if(res) {
-              setUserEmail(res.email);
-              setLoggedIn(true);
-              history.push("/");
-            }
-          })
-         .catch ((err) => console.log(`Ошибка токена ${err}`)); 
-      }
-    });
 
 
   function handleDeleteClick(card) {
@@ -190,8 +195,8 @@ function App() {
     login(email, password).then((res) => {
       if (res) {
         localStorage.setItem("jwt", res.token);
+        setUserEmail(email);
         setLoggedIn(true);
-        setUserEmail(res.email);
         history.push("/");
       }
     })
